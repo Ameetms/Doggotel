@@ -1,0 +1,36 @@
+<h2>Admin Panel - Approve Users</h2>
+<table border="1">
+    <tr>
+        <th>Mobile</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Approved</th>
+        <th>Can Bring Dog</th>
+        <th>Action</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user['Mobile'] }}</td>
+        <td>{{ user['Name'] }}</td>
+        <td>{{ user['Email'] }}</td>
+        <td>{{ user['Approved'] }}</td>
+        <td>{{ user['Can Bring Dog'] }}</td>
+        <td>
+            <form method="POST">
+                <input type="hidden" name="mobile" value="{{ user['Mobile'] }}">
+                <label>Approve:</label>
+                <select name="action">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <label>Allow Dog:</label>
+                <select name="can_bring_dog">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+                <button type="submit">Update</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
