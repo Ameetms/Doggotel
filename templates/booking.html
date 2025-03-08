@@ -1,0 +1,12 @@
+<h2>Hotel Booking</h2>
+<p>Mobile: {{ mobile }}</p>
+<p>Allowed to Bring Dog: {{ can_bring_dog }}</p>
+<form method="POST">
+    <label>Hotel Name:</label>
+    <input type="text" name="hotel" required>
+    <label>Check-in Date:</label>
+    <input type="date" name="checkin" required>
+    <label>Check-out Date:</label>
+    <input type="date" name="checkout" required>
+    <button type="submit">Book Now</button>
+</form>
