@@ -2,11 +2,17 @@ from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import os
 
-app = Flask(__name__)
+# Get the base directory of the project
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Define paths to the templates and static files
+app = Flask(__name__, 
+            template_folder=os.path.join(BASE_DIR, "hotel booking/templates"),
+            static_folder=os.path.join(BASE_DIR, "hotel booking/static"))
 
 # File paths
-USERS_FILE = "users.xlsx"
-BOOKINGS_FILE = "bookings.xlsx"
+USERS_FILE = os.path.join(BASE_DIR, "users.xlsx")
+BOOKINGS_FILE = os.path.join(BASE_DIR, "bookings.xlsx")
 
 # Ensure Excel files exist
 def create_excel_if_not_exists(file_path, columns):
