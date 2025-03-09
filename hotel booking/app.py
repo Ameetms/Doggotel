@@ -2,17 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 import os
 
-# Get the base directory of the project
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Define paths to the templates and static files
-app = Flask(__name__, 
-            template_folder=os.path.join(BASE_DIR, "hotel booking/templates"),
-            static_folder=os.path.join(BASE_DIR, "hotel booking/static"))
+# Initialize Flask app
+app = Flask(__name__, template_folder="templates", static_folder="static")
 
 # File paths
-USERS_FILE = os.path.join(BASE_DIR, "users.xlsx")
-BOOKINGS_FILE = os.path.join(BASE_DIR, "bookings.xlsx")
+USERS_FILE = "users.xlsx"
+BOOKINGS_FILE = "bookings.xlsx"
 
 # Ensure Excel files exist
 def create_excel_if_not_exists(file_path, columns):
@@ -20,7 +15,7 @@ def create_excel_if_not_exists(file_path, columns):
         df = pd.DataFrame(columns=columns)
         df.to_excel(file_path, index=False, engine='openpyxl')
 
-# Create files with new fields for approval and dog permission
+# Create Excel files if they don't exist
 create_excel_if_not_exists(USERS_FILE, ["Mobile", "Name", "Email", "Approved", "Can Bring Dog"])
 create_excel_if_not_exists(BOOKINGS_FILE, ["Mobile", "Hotel", "Check-in", "Check-out"])
 
@@ -59,7 +54,7 @@ def register(mobile):
         df_users = pd.concat([df_users, new_user], ignore_index=True)
         df_users.to_excel(USERS_FILE, index=False, engine='openpyxl')
 
-        return "Registration successful! Wait for admin approval."
+        return redirect(url_for('home'))  # Redirect to home after registration
     
     return render_template('register.html', mobile=mobile)
 
@@ -82,31 +77,4 @@ def admin():
     return render_template('admin.html', users=df_users.to_dict(orient='records'))
 
 @app.route('/booking/<mobile>', methods=['GET', 'POST'])
-def booking(mobile):
-    df_users = pd.read_excel(USERS_FILE, engine='openpyxl')
-    user = df_users[df_users["Mobile"].astype(str) == mobile].iloc[0]
-
-    if user["Approved"] != "Yes":
-        return "Access denied. Your account is not approved."
-
-    if request.method == 'POST':
-        hotel = request.form['hotel']
-        checkin = request.form['checkin']
-        checkout = request.form['checkout']
-        df_bookings = pd.read_excel(BOOKINGS_FILE, engine='openpyxl')
-
-        new_booking = pd.DataFrame({
-            "Mobile": [mobile],
-            "Hotel": [hotel],
-            "Check-in": [checkin],
-            "Check-out": [checkout]
-        })
-        df_bookings = pd.concat([df_bookings, new_booking], ignore_index=True)
-        df_bookings.to_excel(BOOKINGS_FILE, index=False, engine='openpyxl')
-
-        return "Booking Successful!"
-
-    return render_template('booking.html', mobile=mobile, can_bring_dog=user["Can Bring Dog"])
-
-if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5001, debug=True)
+def boo
